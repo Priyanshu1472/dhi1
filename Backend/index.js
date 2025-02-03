@@ -6,7 +6,7 @@ const fs = require("fs");
 const cors = require("cors");
 
 const app = express();
-app.use(cors({ origin: "http://65.1.148.239:3000", methods: ["GET", "POST"] }));
+app.use(cors({ origin: "http://13.203.103.190:3000", methods: ["GET", "POST"] }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
