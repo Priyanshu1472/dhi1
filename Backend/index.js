@@ -144,7 +144,7 @@ async function uploadFileToSynology(path, file) {
 }
 
 // Login route
-app.post("/login", (req, res) => {
+app.post("/form", (req, res) => {
   const { username, password } = req.body;
 
   if (clinics[username] && clinics[username] === password) {
