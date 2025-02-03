@@ -5,28 +5,49 @@ const FormData = require("form-data");
 const fs = require("fs");
 const cors = require("cors");
 
+const express = require('express');
+const cors = require('cors');
 const app = express();
 
-// Allowed origins
-const allowedOrigins = [
-  'http://localhost:3000',        // Local development
-  'http://13.127.244.127:3000/login'    // EC2 public IP frontend
+// Option 1: Allow specific origin
+const corsOptions = {
+  origin: 'http://13.127.244.127:3000',  // Your frontend URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true  // If you're using cookies/sessions
+};
 
+app.use(cors(corsOptions));
+
+// Option 2: Allow multiple origins
+const allowedOrigins = [
+  'http://13.127.244.127:3000',  // Production frontend
+  'http://localhost:3000'        // Local development
 ];
 
-// CORS middleware setup
-app.use(cors({
-  origin: function(origin, callback) {
-    if (allowedOrigins.includes(origin) || !origin) {
-      // Allow requests with no origin (e.g., mobile apps, curl requests)
+const corsOptionsMultiple = {
+  origin: function (origin, callback) {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
     }
   },
-  methods: ['GET', 'POST'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+  credentials: true
+};
+
+app.use(cors(corsOptionsMultiple));
+
+// If you're not using Express, you can set headers manually
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://13.127.244.127:3000');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
