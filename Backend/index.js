@@ -28,27 +28,14 @@ const clinics = {
 
 // Configure CORS to allow requests from the frontend\
 
-const cors = require('cors');
+// app.use(cors({
+//   origin: ["*"],
+//   methods: ['GET', 'POST'],
+//   allowedHeaders: ['Content-Type'],
+//   credentials: true // Allow cookies or authentication headers
+// }));
 
-// CORS Configuration
-const allowedOrigins = [
-  "http://localhost:3000",
-  "http://13.127.244.127:3000"
-];
-
-app.use(cors({
-  origin: function(origin, callback) {
-    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type']
-}));
-
-// app.options('*', cors());  // Enable pre-flight for all routes
+app.options('*', cors());  // Enable pre-flight for all routes
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
