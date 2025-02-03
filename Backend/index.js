@@ -5,18 +5,26 @@ const FormData = require("form-data");
 const fs = require("fs");
 const cors = require("cors");
 
-const cors = require('cors');
 
+const express = require('express');
+const cors = require('cors');
+const app = express();
+
+// CORS Configuration
 const allowedOrigins = [
   'http://localhost:3000',  // Local development
   'http://13.127.244.127:3000'  // Your EC2 frontend's public IP
 ];
 
-// Use the array of allowed origins
 app.use(cors({
   origin: allowedOrigins,
   methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+app.use((req, res, next) => {
+  console.log(res.getHeaders()); // Log response headers
+  next();
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -134,16 +142,16 @@ async function uploadFileToSynology(path, file) {
   }
 }
 
-// // Login route
-// app.post("/login", (req, res) => {
-//   const { username, password } = req.body;
+// Login route
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
 
-//   if (clinics[username] && clinics[username] === password) {
-//     res.status(200).json({ success: true, clinicName: username });
-//   } else {
-//     res.status(401).json({ success: false, message: "Invalid credentials" });
-//   }
-// });
+  if (clinics[username] && clinics[username] === password) {
+    res.status(200).json({ success: true, clinicName: username });
+  } else {
+    res.status(401).json({ success: false, message: "Invalid credentials" });
+  }
+});
 
 // Form submission route
 app.post("/submit-form", upload, async (req, res) => {
