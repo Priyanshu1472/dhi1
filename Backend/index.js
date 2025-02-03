@@ -26,16 +26,9 @@ const clinics = {
   Salem: "Salem123",
 };
 
-// Configure CORS to allow requests from the frontend
-const corsOptions = {
-  origin: "http://13.127.244.127:3000", // ✅ Only allow your deployed frontend
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true, // ✅ Allow credentials like cookies, sessions, etc.
-};
+// Configure CORS to allow requests from the frontend\
 
-app.use(cors(corsOptions));
-
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -125,11 +118,6 @@ async function uploadFileToSynology(path, file) {
     throw error;
   }
 }
-
-//get
-app.get("/login", (req, res) => {
-  res.status(200).json({ success: true, clinicName: "Delhi" });
-});
 
 // Login route
 app.post("/login", (req, res) => {
