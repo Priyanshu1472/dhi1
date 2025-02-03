@@ -142,6 +142,11 @@ async function uploadFileToSynology(path, file) {
   }
 }
 
+// login page using get method
+app.get('/', (req, res) => {
+  req.redirect('/login');
+});
+
 // Login route
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
