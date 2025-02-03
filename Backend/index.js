@@ -5,8 +5,19 @@ const FormData = require("form-data");
 const fs = require("fs");
 const cors = require("cors");
 
-const app = express();
-app.use(cors({ origin: "http://13.127.244.127:3000", methods: ["GET", "POST"] }));
+const cors = require('cors');
+
+const allowedOrigins = [
+  'http://localhost:3000',  // Local development
+  'http://13.127.244.127:3000'  // Your EC2 frontend's public IP
+];
+
+// Use the array of allowed origins
+app.use(cors({
+  origin: allowedOrigins,
+  methods: ['GET', 'POST'],
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
