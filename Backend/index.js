@@ -120,6 +120,11 @@ async function uploadFileToSynology(path, file) {
   }
 }
 
+// Health check route
+app.get("/", (req, res) => {
+  res.status(200).json({ success: true, message: "Server is running" });
+});
+
 // Login route
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
