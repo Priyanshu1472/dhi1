@@ -5,13 +5,7 @@ const FormData = require("form-data");
 const fs = require("fs");
 const cors = require("cors");
 
-const express = require('express');
-const cors = require('cors');
 const app = express();
-
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 // Define clinic credentials
 const clinics = {
@@ -125,6 +119,17 @@ async function uploadFileToSynology(path, file) {
     throw error;
   }
 }
+
+// CORS configuration
+const corsOptions = {
+  origin: "http://13.127.244.127:3000", // Your frontend's IP address
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+app.use(cors(corsOptions));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Login route
 app.post("/form", (req, res) => {
