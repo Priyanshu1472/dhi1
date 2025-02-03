@@ -134,16 +134,16 @@ async function uploadFileToSynology(path, file) {
   }
 }
 
-// Login route
-app.post("/login", (req, res) => {
-  const { username, password } = req.body;
+// // Login route
+// app.post("/login", (req, res) => {
+//   const { username, password } = req.body;
 
-  if (clinics[username] && clinics[username] === password) {
-    res.status(200).json({ success: true, clinicName: username });
-  } else {
-    res.status(401).json({ success: false, message: "Invalid credentials" });
-  }
-});
+//   if (clinics[username] && clinics[username] === password) {
+//     res.status(200).json({ success: true, clinicName: username });
+//   } else {
+//     res.status(401).json({ success: false, message: "Invalid credentials" });
+//   }
+// });
 
 // Form submission route
 app.post("/submit-form", upload, async (req, res) => {
