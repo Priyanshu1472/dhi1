@@ -28,10 +28,12 @@ const clinics = {
 
 // Configure CORS to allow requests from the frontend
 const corsOptions = {
-  origin: "http://13.127.244.127:3000", // Allow frontend requests
+  origin: "http://13.127.244.127:3000", // ✅ Only allow your deployed frontend
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true, // ✅ Allow credentials like cookies, sessions, etc.
 };
+
 app.use(cors(corsOptions));
 
 app.use(express.json());
