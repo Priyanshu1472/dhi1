@@ -116,15 +116,9 @@ async function uploadFileToSynology(path, file) {
   }
 }
 
-// CORS configuration for multiple origins
+// CORS configuration to allow only the specific frontend origin
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (["http://13.127.244.127:3000", "http://localhost:3000"].includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
+  origin: "http://13.127.244.127:3000", // Allow only this origin
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
