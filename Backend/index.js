@@ -28,8 +28,10 @@ const clinics = {
 
 // Configure CORS to allow requests from the frontend\
 
-app.use(cors({ origin: "http://13.127.244.127:3000" })); // Update with your frontend URL
-
+app.use(cors({
+  origin: 'http://13.127.244.127:3000',
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
