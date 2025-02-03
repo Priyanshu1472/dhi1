@@ -124,6 +124,11 @@ async function uploadFileToSynology(path, file) {
   }
 }
 
+//get
+app.get("/login", (req, res) => {
+  res.status(200).json({ success: true, clinicName: "Delhi" });
+});
+
 // Login route
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
