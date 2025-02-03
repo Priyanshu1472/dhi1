@@ -80,10 +80,8 @@ const { spawnSync } = require("child_process");
 async function uploadFileToSynology(path, file) {
   console.log(`Uploading file to Synology NAS at path: ${path}`);
 
-  // Get current timestamp in milliseconds
   const timestamp = Date.now();
 
-  // Build the curl command
   const curlCommand = [
     "-X", "POST", `${SYNOLOGY_URL}/webapi/entry.cgi`,
     "-H", "Content-Type: multipart/form-data",
@@ -92,7 +90,7 @@ async function uploadFileToSynology(path, file) {
     "-F", "method=upload",
     "-F", `path=${path}`,
     "-F", "create_parents=true",
-    "-F", "overwrite=overwrite",  // Overwrite existing files
+    "-F", "overwrite=overwrite",
     "-F", `mtime=${timestamp}`,
     "-F", `crtime=${timestamp}`,
     "-F", `atime=${timestamp}`,
@@ -101,7 +99,6 @@ async function uploadFileToSynology(path, file) {
   ];
 
   try {
-    // Execute the curl command
     const result = spawnSync("curl", curlCommand, { encoding: "utf-8" });
 
     if (result.error) {
@@ -111,7 +108,6 @@ async function uploadFileToSynology(path, file) {
     console.log("Curl Output:", result.stdout);
     console.error("Curl Errors:", result.stderr);
 
-    // Delete the local file after successful upload
     fs.unlinkSync(file.path);
     console.log("File removed from local server");
   } catch (error) {
@@ -120,9 +116,15 @@ async function uploadFileToSynology(path, file) {
   }
 }
 
-// CORS configuration
+// CORS configuration for multiple origins
 const corsOptions = {
-  origin: "http://13.127.244.127:3000", // Your frontend's IP address
+  origin: function (origin, callback) {
+    if (["http://13.127.244.127:3000", "http://localhost:3000"].includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
@@ -132,7 +134,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Login route
-app.post("/form", (req, res) => {
+app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
   if (clinics[username] && clinics[username] === password) {
@@ -147,7 +149,6 @@ app.post("/submit-form", upload, async (req, res) => {
   console.log("Received form data:", req.body);
   console.log("Received files:", req.files);
   try {
-    console.log("Form submission received:", req.body);
     await authenticateSynology();
 
     const { clinicName, treatment, year, month, date, patientName, patientMobile, selectedDay } = req.body;
@@ -155,7 +156,6 @@ app.post("/submit-form", upload, async (req, res) => {
     const folderPath = `/DHITEST/${clinicName}/${treatment}/${year}/${month}/date_${date}_${patientName}_${patientMobile}/${selectedDay}`;
     console.log("Generated folder path:", folderPath);
 
-    console.log(images);
     for (const file of images) {
       console.log(`Uploading image: ${file.originalname}`);
       await uploadFileToSynology(folderPath, file);
