@@ -10,7 +10,8 @@ const app = express();
 // Allowed origins
 const allowedOrigins = [
   'http://localhost:3000',        // Local development
-  'http://13.127.244.127:3000'    // EC2 public IP frontend
+  'http://13.127.244.127:3000/login'    // EC2 public IP frontend
+
 ];
 
 // CORS middleware setup
