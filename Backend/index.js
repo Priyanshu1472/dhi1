@@ -162,5 +162,5 @@ app.post("/submit-form", upload, async (req, res) => {
 });
 
 // Server setup
-const PORT = 3001;
-app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
+app.listen(3001, '0.0.0.0', () => console.log('Server running...'));
+
