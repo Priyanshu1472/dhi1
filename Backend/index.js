@@ -28,14 +28,13 @@ const clinics = {
 
 // Configure CORS to allow requests from the frontend\
 
-// app.use(cors({
-//   origin: ["*"],
-//   methods: ['GET', 'POST'],
-//   allowedHeaders: ['Content-Type'],
-//   credentials: true // Allow cookies or authentication headers
-// }));
+app.use(cors({
+  origin: ["*"],
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type'],
+  credentials: true // Allow cookies or authentication headers
+}));
 
-app.options('*', cors());  // Enable pre-flight for all routes
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
