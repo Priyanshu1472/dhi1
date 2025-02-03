@@ -1,9 +1,9 @@
 const express = require("express");
 const multer = require("multer");
 const axios = require("axios");
-const FormData = require("form-data");
-const fs = require("fs");
 const cors = require("cors");
+const fs = require("fs");
+const { spawnSync } = require("child_process");
 
 const app = express();
 
@@ -26,6 +26,17 @@ const clinics = {
   Salem: "Salem123",
 };
 
+// Configure CORS to allow requests from the frontend
+const corsOptions = {
+  origin: "http://13.127.244.127:3000", // Allow frontend requests
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+app.use(cors(corsOptions));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 // Multer storage configuration for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -40,7 +51,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage }).array("images");
 
-// Synology NAS URL and credentials
+// Synology NAS details
 const SYNOLOGY_URL = "https://dhiinternationalnas.direct.quickconnect.to:5004/";
 const SYNOLOGY_CREDENTIALS = { account: "dhitest", passwd: "DhiTest#308" };
 let synologySid = "";
@@ -75,11 +86,8 @@ async function authenticateSynology() {
 }
 
 // Upload file to Synology NAS
-const { spawnSync } = require("child_process");
-
 async function uploadFileToSynology(path, file) {
   console.log(`Uploading file to Synology NAS at path: ${path}`);
-
   const timestamp = Date.now();
 
   const curlCommand = [
@@ -115,17 +123,6 @@ async function uploadFileToSynology(path, file) {
     throw error;
   }
 }
-
-// CORS configuration to allow only the specific frontend origin
-const corsOptions = {
-  origin: "http://13.127.244.127:3000", // Allow only this origin
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-};
-app.use(cors(corsOptions));
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 // Login route
 app.post("/login", (req, res) => {
@@ -163,5 +160,5 @@ app.post("/submit-form", upload, async (req, res) => {
   }
 });
 
-// Server setup
-app.listen(3001, '0.0.0.0', () => console.log('Server running...'));
+// Start the server
+app.listen(3001, "0.0.0.0", () => console.log("Backend server running on http://13.203.103.190:3001"));
