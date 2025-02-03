@@ -5,26 +5,27 @@ const FormData = require("form-data");
 const fs = require("fs");
 const cors = require("cors");
 
-
-const express = require('express');
-const cors = require('cors');
 const app = express();
 
-// CORS Configuration
+// Allowed origins
 const allowedOrigins = [
-  'http://localhost:3000',  // Local development
-  'http://13.127.244.127:3000'  // Your EC2 frontend's public IP
+  'http://localhost:3000',        // Local development
+  'http://13.127.244.127:3000'    // EC2 public IP frontend
 ];
 
+// CORS middleware setup
 app.use(cors({
-  origin: allowedOrigins,
+  origin: function(origin, callback) {
+    if (allowedOrigins.includes(origin) || !origin) {
+      // Allow requests with no origin (e.g., mobile apps, curl requests)
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
-app.use((req, res, next) => {
-  console.log(res.getHeaders()); // Log response headers
-  next();
-});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -142,11 +143,6 @@ async function uploadFileToSynology(path, file) {
   }
 }
 
-// login page using get method
-app.get('/', (req, res) => {
-  req.redirect('/login');
-});
-
 // Login route
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
@@ -187,4 +183,3 @@ app.post("/submit-form", upload, async (req, res) => {
 
 // Server setup
 app.listen(3001, '0.0.0.0', () => console.log('Server running...'));
-
